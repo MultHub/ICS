@@ -64,21 +64,22 @@ init()
 --function mainCore()
   p = peripheral.wrap("chatbox_0")
   while a == nil do
-    e,s,p,t = os.pullEvent("chatbox_command")
-    if t:sub(1,4) == "ICS:" and admins[p] then
+    timer = os.startTimer(5)
+    e,s,p,t = os.pullEvent()
+    if e == "chatbox_command" and t:sub(1,4) == "ICS:" and admins[p] then
       msg = t:gsub("ICS:","")
-      if msg:sub(1,4) == "say;" then
+      if e == "chatbox_command" and msg:sub(1,4) == "say;" then
         msg2 = msg:gsub("say;","")
         say(msg2)
         print("  Log: "..p.." said '"..msg2..".")
-      elseif msg:sub(1,4) == "evac"then
+      elseif e == "chatbox_command" and msg:sub(1,4) == "evac"then
         shell.run("alarm")
         print("  Log: "..p.." triggered ALARM.")
-      elseif msg:sub(1,4) == "cmd;" then
+      elseif e == "chatbox_command" and msg:sub(1,4) == "cmd;" then
         beeble = msg:gsub("cmd;","")
         run(beeble)
         print("  Log: "..p.." ran command "..beeble..".")
-      elseif msg:sub(1,5) == "snake" then
+      elseif e == "chatbox_command" and msg:sub(1,5) == "snake" then
         print("  Log: "..p.." used the snake command.")
         say("Snake, respond!")
         sleep(1)
@@ -88,7 +89,7 @@ init()
         for i=1,5 do
           run("smite *")
         end
-      elseif msg:sub(1,7) == "suicide" then
+      elseif e == "chatbox_command" and msg:sub(1,7) == "suicide" then
         if p == "fun_ride" then
         print(" WARNING: OWNER HAS TRIGGERED SELF DESTRUCT!")
         say("Owner has triggered self destruct.")
@@ -98,6 +99,22 @@ init()
         run("&cCore &4Now &6Derelict.")
         os.reboot()
         end
+      elseif e == "timer" and p == timer then
+        f = fs.open("/startup","r")
+  text = f.readAll()
+  f.close()
+  text2 = http.get("https://raw.githubusercontent.com/MCFunRide/ICS/master/startup").readAll()
+  if text == text2 then
+    --say("&aNo updates have been found in the main repository.")
+  else
+    say("&cThere has been a software update in the main repository. Updating...")
+    f = fs.open("/startup","w")
+    f.writeLine(text2)
+    f.close()
+    say("&aSystem is now up to date. Rebooting...")
+    sleep(1)
+    os.reboot()
+  end
       end
     end
   end
