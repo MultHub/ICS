@@ -1,0 +1,105 @@
+function lel()
+-- Phoenix ICS
+
+function run(str)
+  peripheral.find("command").setCommand(str:gsub("&","\194\167"))
+  peripheral.find("command").runCommand()
+end
+
+function say(str)
+  run("say "..str)
+end
+
+function init()
+  say("&6&lIntegrated &b&lControl &6&lSystem&d: Initialising core features...")
+  term.redirect(peripheral.find("monitor"))
+  term.setBackgroundColor(colors.green)
+  term.clear()
+  term.setCursorPos(1,1)
+  term.setTextColor(colors.white)
+  print("&6Integrated &bControl &6System &d- Checking for updates...")
+  f = fs.open("/startup","r")
+  text = f.readAll()
+  f.close()
+  a = 
+  sleep(1)
+  say("Running system tests... this could take a bit.")
+  print("System tests are now running.")
+  say("&1q&2w&3e&4r&5t&6y&7u&8i&9o&0p&aa&bs&cd&dg&eh")
+  sleep(0.3)
+  say("All core functions ready. Starting OSD...")
+  print("OSD startup...")
+  sleep(1)
+  term.clear()
+  term.setCursorPos(1,1)
+  function center(y,str)
+    w,h = term.getSize()
+    x = (w/2)-(#str/2)
+    term.setCursorPos(x,y)
+    print(str)
+  end
+  center(1,"ICS On Screen Display")
+  center(2,"System Mainframe #01")
+  print()
+end
+
+function tellraw(plr,str)
+  run("tellraw "..plr.." {text:'"..str.."'}")
+end
+
+admins = dofile("/admins")
+
+init()
+--function mainCore()
+  p = peripheral.wrap("chatbox_0")
+  while a == nil do
+    e,s,p,t = os.pullEvent("chatbox_command")
+    if t:sub(1,4) == "ICS:" and admins[p] then
+      msg = t:gsub("ICS:","")
+      if msg:sub(1,4) == "say;" then
+        msg2 = msg:gsub("say;","")
+        say(msg2)
+        print("  Log: "..p.." said '"..msg2..".")
+      elseif msg:sub(1,4) == "evac"then
+        shell.run("alarm")
+        print("  Log: "..p.." triggered ALARM.")
+      elseif msg:sub(1,4) == "cmd;" then
+        beeble = msg:gsub("cmd;","")
+        run(beeble)
+        print("  Log: "..p.." ran command "..beeble..".")
+      elseif msg:sub(1,5) == "snake" then
+        print("  Log: "..p.." used the snake command.")
+        say("Snake, respond!")
+        sleep(1)
+        say("Snake?!")
+        sleep(1)
+        say("SNAAAAAKE!!")
+        for i=1,5 do
+          run("smite *")
+        end
+      elseif msg:sub(1,7) == "suicide" then
+        if p == "fun_ride" then
+        print(" WARNING: OWNER HAS TRIGGERED SELF DESTRUCT!")
+        say("Owner has triggered self destruct.")
+        say("This server backend is now closing down...")
+        fs.delete("/startup")
+        say("This has been a nice time, I will see you all later.")
+        run("&cCore &4Now &6Derelict.")
+        os.reboot()
+        end
+      end
+    end
+  end
+--end
+
+--init()
+--mainCore()
+end
+
+local ok,err = pcall(lel)
+if not ok then--and err == "Terminated" then
+  say("Fatal error: "..err)
+  return
+elseif not ok and err == "Terminated" then
+  say("@p just terminated me. Some admin please help!")
+end
