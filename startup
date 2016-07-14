@@ -11,7 +11,7 @@ function say(str)
 end
 
 function init()
-  say("&6&lIntegrated &b&lControl &6&lSystem&d: Initialising core features...")
+  --say("&6&lIntegrated &b&lControl &6&lSystem&d: Initialising core features...")
   term.redirect(peripheral.find("monitor"))
   term.setBackgroundColor(colors.green)
   term.clear()
