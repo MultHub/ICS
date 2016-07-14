@@ -21,7 +21,18 @@ function init()
   f = fs.open("/startup","r")
   text = f.readAll()
   f.close()
-  a = 
+  text2 = http.get("https://raw.githubusercontent.com/MCFunRide/ICS/master/startup").readAll()
+  if text == text2 then
+    say("&aNo updates have been found in the main repository.")
+  else
+    say("&cThere has been a software update in the main repository. Updating...")
+    f = fs.open("/startup","w")
+    f.writeLine(text2)
+    f.close()
+    say("&aSystem is now up to date. Rebooting...")
+    sleep(1)
+    os.reboot()
+  end
   sleep(1)
   say("Running system tests... this could take a bit.")
   print("System tests are now running.")
