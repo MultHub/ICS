@@ -125,9 +125,10 @@ init()
 end
 
 local ok,err = pcall(lel)
-if not ok then--and err == "Terminated" then
-  say("Fatal error: "..err)
-  return
-elseif not ok and err == "Terminated" then
-  say("@p just terminated me. Some admin please help!")
+if not ok then
+  if err == "Terminated" then
+    say("@p just terminated me. Some admin please help!")
+  else
+    say("Fatal error: "..err)
+  end
 end
